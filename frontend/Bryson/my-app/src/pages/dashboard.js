@@ -15,10 +15,6 @@ function DashboardPage() {
   }
 
   const navigate = useNavigate();
-  
-  const navigateToDashboard = () => {
-    navigate('/dashboard');
-  };
 
   const navigateToLogin = () => {
     navigate('/');

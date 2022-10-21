@@ -10,11 +10,15 @@ export function App() {
   };
 
   const navigateToLogin = () => {
-    navigate('/');
+    navigate('/login');
   };
 
   const navigateToEditProfile = () => {
     navigate('/editprofile');
+  };
+
+  const navigateToCreateAccount = () => {
+    navigate('/createaccount');
   };
 }
 

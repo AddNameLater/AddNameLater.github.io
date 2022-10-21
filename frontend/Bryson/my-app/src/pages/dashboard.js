@@ -17,7 +17,7 @@ function DashboardPage() {
   const navigate = useNavigate();
 
   const navigateToLogin = () => {
-    navigate('/');
+    navigate('/login');
   };
 
   const navigateToEditProfile = () => {

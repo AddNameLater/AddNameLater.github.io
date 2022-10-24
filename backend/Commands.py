@@ -1,4 +1,4 @@
-import UserProfile.py as UserProfile
+import UserProfile
 
 class Commands:
     uniqueUserID = 1

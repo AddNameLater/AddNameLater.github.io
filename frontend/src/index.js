@@ -5,6 +5,7 @@ import DashboardPage from "./pages/dashboard";
 import LoginPage from "./pages/login";
 import EditProfilePage from "./pages/editprofile";
 import CreateAccountPage from "./pages/createaccount";
+import TrackerPage from './pages/tracker';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="editprofile" element={<EditProfilePage/>} />
         <Route path="createaccount" element={<CreateAccountPage/>} />
+        <Route path="tracker" element={<TrackerPage/>} />
       </Routes>
     </BrowserRouter>
   );

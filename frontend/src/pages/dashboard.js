@@ -24,6 +24,10 @@ function DashboardPage() {
     navigate('/editprofile');
   };
 
+  const navigateToTracker = () => {
+    navigate('/tracker');
+  }
+
   return (
     <>
       <div
@@ -41,7 +45,7 @@ function DashboardPage() {
           alignItems: "center"
         }}>
       <ButtonGroup className="buttonRow1">
-        <Button className="button1" style={{ width: "300px", height: "300px",}}>Tracker</Button>
+        <Button onClick={navigateToTracker} className="button1" style={{ width: "300px", height: "300px",}}>Tracker</Button>
         <Button className="button2" style={{ width: "300px", height: "300px",}}>Notepad</Button>
       </ButtonGroup>
       </div>

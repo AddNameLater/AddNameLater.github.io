@@ -1,7 +1,14 @@
 import json
 from flask import Flask, render_template, request
+from flask_login import LoginManager
+from pymongo import MongoClient
 
 app = Flask(__name__)
+
+loginf = LoginManager(app)
+
+uri = "mongodb+srv://Editor:Code9@diet-tracker.ncrahr5.mongodb.net/?retryWrites=true&w=majority"
+client = MongoClient(uri)
 
 @app.route('/')
 def login():
@@ -42,6 +49,18 @@ def search():
 def notepad():
     if request.method == "GET":
         return "This is the notepade page"
+    elif request.method == "POST":
+        return "test"
+
+@app.route('/userinfo/<username>')
+def userlogin(username):
+    if request.method == "GET":
+        db = client.DietTracker
+        coll = db.Users
+        result = coll.find_one({"name": username}, {"_id": 0})
+        qresult = list(result.values())
+        qres = ("User ID: " + str(qresult[0]) + "\nUser Name: " + str(qresult[1]) + "\nHeight(inches): " + str(qresult[3]) + "\nWeight(lbs): " + str(qresult[4]) + "\nExercise Class: " + str(qresult[5]))
+        return qres
     elif request.method == "POST":
         return "test"
 

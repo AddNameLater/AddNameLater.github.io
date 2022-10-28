@@ -1,6 +1,6 @@
 #!/bin/bash
 cd /home/ec2-user/frontend/src
-npm start
+sudo npm start
 pm2 start npm --name "DietTracker" -- start
 pm2 startup
 pm2 save

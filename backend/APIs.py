@@ -10,12 +10,21 @@ loginf = LoginManager(app)
 uri = "mongodb+srv://Editor:Code9@diet-tracker.ncrahr5.mongodb.net/?retryWrites=true&w=majority"
 client = MongoClient(uri)
 
-@app.route('/')
+@app.route('/', methods=['POST'])
 def login():
-    if request.method == "GET":
-        return "This is the login page"
-    elif request.method == "POST":
-        return "test"
+    if request.method == "POST":
+        response_body = request.form
+        print(response_body)
+        print(request.form.get("password"))
+        return response_body
+
+@app.route('/createaccount', methods=['POST'])
+def createAccount():
+    if request.method == "POST":
+        response_body = request.form
+        print(response_body)
+        print(request.form.get("password"))
+        return response_body
 
 @app.route('/dashboard')
 def dashboard():
@@ -24,7 +33,7 @@ def dashboard():
     elif request.method == "POST":
         return "test"
 
-@app.route("/editprofile")
+@app.route("/editprofile", methods=['GET', 'POST'])
 def editProfile():
     if request.method == "GET":
         #For response body, call GET functions for user data inside json variable
@@ -39,30 +48,34 @@ def editProfile():
         }
         return response_body
     elif request.method == "POST":
-        return "test"
+        #To get specific variable from json file, call request.form.get(<variable name>)
+        response_body = request.form
+        print(response_body)
+        print(request.form.get("password"))
+        return response_body
 
-@app.route("/tracker")
+@app.route("/tracker", methods=['GET', 'POST'])
 def tracker():
     if request.method == "GET":
         return "This is the tracker page"
     elif request.method == "POST":
         return "test"
 
-@app.route("/tracker/search")
+@app.route("/tracker/search", methods=['GET', 'POST'])
 def search():
     if request.method == "GET":
         return "This is the search page"
     elif request.method == "POST":
         return "test"
 
-@app.route("/notepad")
+@app.route("/notepad", methods=['GET', 'POST'])
 def notepad():
     if request.method == "GET":
         return "This is the notepade page"
     elif request.method == "POST":
         return "test"
 
-@app.route('/userinfo/<username>')
+@app.route('/userinfo/<username>', methods=['GET', 'POST'])
 def userlogin(username):
     if request.method == "GET":
         db = client.DietTracker

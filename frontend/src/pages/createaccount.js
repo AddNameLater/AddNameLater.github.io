@@ -1,5 +1,6 @@
 import React, { Component }  from 'react';
 import {useNavigate} from 'react-router-dom';
+import axios from 'axios';
 import '../createaccount.css';
 
 function CreateAccountPage() {
@@ -10,17 +11,34 @@ function CreateAccountPage() {
   const [userName, setUserName] = React.useState('');
   const [password, setPassword] = React.useState('');
 
+  var modifiedData = new FormData();
+  function postData() {
+    axios({
+      method: "POST",
+      url: "/createaccount",
+      data: modifiedData
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+  }
+
   function handleSubmit() {
     //Add code here to save values in variables into database
     //preventDefault();
-    navigateToDashboard();
+    modifiedData.append('firstName', firstName)
+    modifiedData.append('lastName', lastName)
+    modifiedData.append('userName', userName)
+    modifiedData.append('password', password)
+    navigateToLogin();
+    postData();
   }
 
   const navigate = useNavigate();
-
-  const navigateToDashboard = () => {
-    navigate('/dashboard');
-  };
 
   const navigateToLogin = () => {
       navigate('/');
@@ -41,7 +59,7 @@ function CreateAccountPage() {
           <div>
           <input type="password" id="password" value={password} name="password" placeholder="password" onChange={(e) => setPassword(e.target.value)}/>
           </div>
-          <div><button onClick={navigateToLogin}>Create Account</button></div>
+          <div><button onClick={handleSubmit}>Create Account</button></div>
         </div>
       </div>
     </div>

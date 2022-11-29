@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
+import axios from 'axios';
 import '../editprofile.css';
 
 //STYLIZE DROP DOWN MENUS
@@ -13,6 +14,33 @@ function EditProfilePage() {
   const [gender, setGender] = React.useState('');
   const [weight, setWeight] = React.useState('');
   const [flag, setFlag] = React.useState('');
+
+  function getData() {
+    axios({
+      method: "GET",
+      url: "/editprofile",
+    })
+    .then((response) => {
+      const data = response.data
+      setUserName(data.userName)
+      setPassword(data.password)
+      setHeight(data.height)
+      setAge(data.age)
+      setGender(data.gender)
+      setWeight(data.weight)
+      setFlag(data.flag)
+    }).catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+      })
+  }
+
+  useEffect(() => {
+    getData();
+  }, [])
 
   const navigate = useNavigate();
   

@@ -27,7 +27,17 @@ def dashboard():
 @app.route("/editprofile")
 def editProfile():
     if request.method == "GET":
-        return "This is the edit profile page"
+        #For response body, call GET functions for user data inside json variable
+        response_body = {
+            "userName" : "test",
+            "password" : "testPW",
+            "height" : 68,
+            "age" : 21,
+            "gender" : "Female",
+            "weight" : 155,
+            "flag" : 3
+        }
+        return response_body
     elif request.method == "POST":
         return "test"
 
@@ -62,7 +72,7 @@ def userlogin(username):
         qres = ("User ID: " + str(qresult[0]) + "\nUser Name: " + str(qresult[1]) + "\nHeight(inches): " + str(qresult[3]) + "\nWeight(lbs): " + str(qresult[4]) + "\nExercise Class: " + str(qresult[5]))
         return qres
     elif request.method == "POST":
-        return "test"
+        return "test"   
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

@@ -35,7 +35,23 @@ function EditProfilePage() {
         console.log(error.response.status)
         console.log(error.response.headers)
         }
-      })
+    })
+  }
+
+  var modifiedData = new FormData();
+  function postData() {
+    axios({
+      method: "POST",
+      url: "/editprofile",
+      data: modifiedData
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
   }
 
   useEffect(() => {
@@ -50,8 +66,15 @@ function EditProfilePage() {
 
   function handleSubmit() {
     //Add code here to save values in variables into database
-    //preventDefault();
+    modifiedData.append('userName', userName)
+    modifiedData.append('password', password)
+    modifiedData.append('height', height)
+    modifiedData.append('age', age)
+    modifiedData.append('gender', gender)
+    modifiedData.append('weight', weight)
+    modifiedData.append('flag', flag)
     navigateToDashboard();
+    postData();
   }
 
   return (
@@ -82,7 +105,7 @@ function EditProfilePage() {
             </div>
             <div>
               <div>Height</div>                              
-              <input type="number" id="height" name="height" value={height} placeholder="meters" onChange={(e) => setHeight(e.target.value)}/>  
+              <input type="number" id="height" name="height" value={height} placeholder="inches" onChange={(e) => setHeight(e.target.value)}/>  
             </div>
             <div>
               <div>Age</div>

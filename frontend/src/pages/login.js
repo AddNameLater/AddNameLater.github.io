@@ -1,5 +1,6 @@
 import React, { Component }  from 'react';
 import {useNavigate} from 'react-router-dom';
+import axios from 'axios';
 import '../login.css';
 
 function LoginPage() {
@@ -9,10 +10,29 @@ function LoginPage() {
   const [userName, setUserName] = React.useState('');
   const [password, setPassword] = React.useState('');
 
-  function handleSubmit() {
+  var modifiedData = new FormData();
+  function postData() {
+    axios({
+      method: "POST",
+      url: "/",
+      data: modifiedData
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+  }
+
+  function handleLogin() {
     //Add code here to save values in variables into database
     //preventDefault();
+    modifiedData.append('userName', userName)
+    modifiedData.append('password', password)
     navigateToDashboard();
+    postData();
   }
 
   const navigate = useNavigate();
@@ -34,7 +54,7 @@ function LoginPage() {
           <div><input type="text" id="userName" name="userName" value={userName} placeholder="username" onChange={(e) => setUserName(e.target.value)}/></div>
           <div><input type="password" id="password" value={password} name="password" placeholder="password" onChange={(e) => setPassword(e.target.value)}/>
           </div>
-          <div><button onClick={navigateToDashboard}>Login</button></div>
+          <div><button onClick={handleLogin}>Login</button></div>
           <div>
           </div>
           <div><button onClick={navigateToCreateAccount}>Create Account</button></div>

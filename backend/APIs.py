@@ -57,9 +57,18 @@ def editProfile():
 @app.route("/tracker", methods=['GET', 'POST'])
 def tracker():
     if request.method == "GET":
-        return "This is the tracker page"
+        response_body = {
+            "calories" : 1200,
+            "carbohydrates" : 69,
+            "fat" : 21,
+            "protein" : 44
+        }
+        return response_body
     elif request.method == "POST":
-        return "test"
+        response_body = request.form
+        print(response_body)
+        print(request.form.get("protein"))
+        return response_body
 
 @app.route("/tracker/search", methods=['GET', 'POST'])
 def search():

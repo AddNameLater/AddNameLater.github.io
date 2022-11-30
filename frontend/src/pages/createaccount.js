@@ -41,7 +41,7 @@ function CreateAccountPage() {
   const navigate = useNavigate();
 
   const navigateToLogin = () => {
-      navigate('/');
+    navigate('/');
   };
 
   return (

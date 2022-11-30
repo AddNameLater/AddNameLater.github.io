@@ -1,71 +1,140 @@
-import React, { Component }  from 'react';
+import React, { Component, useEffect }  from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import '../tracker.css';
 
 function TrackerPage() {
 
-    const navigate = useNavigate();
-  
-    const navigateToDashboard = () => {
-    navigate('/dashboard');
-    };
+  const [totalCal, setTotalCal] = React.useState(0);
+  const [totalProtein, setTotalProtein] = React.useState(0);
+  const [totalFat, setTotalFat] = React.useState(0);
+  const [totalCarb, setTotalCarb] = React.useState(0);
+  const [userCal, setUserCal] = React.useState('');
+  const [userProtein, setUserProtein] = React.useState('');
+  const [userFat, setUserFat] = React.useState('');
+  const [userCarb, setUserCarb] = React.useState('');
 
-    return (
-      <html>
-        <head>
-          <title>
-            Tracker Page
-          </title>
-        </head>
-        
-        <body>
-          <div className="App-header">
-            <header>
-              <p>
-                Tracker
-              </p>
-            </header>
-          </div>
-          <div className='App-body'>
-            <form>
-              <div>              
-                <div>Daily Caloric Intake</div>              
-                <input type="text" placeholder="calories"/>  
-              </div>
-              <div>
-                <div>
-                <input type="text" placeholder=""/>
-                </div>
-              </div>
-              <div>Manual input</div>
-              <div className='box'>
-                <div className='box-child'>
-                    <input type="text" placeholder="calories"/>
-                    <input type="text" placeholder="protein"/>  
-                </div>
-                <div className='box-child'>
-                    <input type="text" placeholder="carbs"/>
-                    <input type="text" placeholder="fat"/>  
-                </div> 
-              </div>
-              <div className='button-group'>
-                <div className='button'>
-                    <input type="button" value="Enter"/>
-                </div>
-                <div className='button'>
-                    <input onClick={navigateToDashboard} type="button" value="Save"/>
-                    <input type="button" value="Load"/>
-                </div>
-                <div className='button'>
-                    <input type="button" value="Barcode"/>
-                </div>
-              </div> 
-            </form>
-          </div>
-        </body>
-      </html>          
-    );
+  const navigate = useNavigate();
+
+  const navigateToDashboard = () => {
+    navigate('/dashboard');
+  };
+
+  function handleEnter() {
+    setTotalCal(totalCal + Number(userCal))
+    setTotalProtein(totalProtein + Number(userProtein))
+    setTotalFat(totalFat + Number(userFat))
+    setTotalCarb(totalCarb + Number(userCarb))
+    setUserCal('')
+    setUserCarb('')
+    setUserFat('')
+    setUserProtein('')
   }
+
+  function handleLeave() {
+    modifiedData.append("calories", totalCal)
+    modifiedData.append("protein", totalProtein)
+    modifiedData.append("carbohydrates", totalCarb)
+    modifiedData.append("fat", totalFat)
+    navigateToDashboard()
+    postData();
+  }
+
+  var modifiedData = new FormData();
+  function postData() {
+    axios({
+      method: "POST",
+      url: "/tracker",
+      data: modifiedData
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+  }
+
+  function getData() {
+    axios({
+      method: "GET",
+      url: "/tracker",
+    })
+    .then((response) => {
+      const data = response.data
+      setTotalCal(data.calories)
+      setTotalCarb(data.carbohydrates)
+      setTotalFat(data.fat)
+      setTotalProtein(data.protein)
+    }).catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+  }
+
+  useEffect(() => {
+    getData();
+  }, [])
+
+  return (
+    <html>
+      <head>
+        <title>
+          Tracker Page
+        </title>
+      </head>
+      
+      <body>
+        <div className="App-header">
+          <header>
+            <p>
+              Tracker
+            </p>
+          </header>
+        </div>
+        <div className='App-body'>
+          <form>
+            <div>              
+              <div>Daily Caloric Intake</div>              
+              <input type="number" id="totalCal" name="totalCal" value={totalCal} placeholder="calories"/>  
+            </div>
+            <div>
+              <div>
+              <input type="text" placeholder=""/>
+              </div>
+            </div>
+            <div>Manual input</div>
+            <div className='box'>
+              <div className='box-child'>
+                  <input type="number" id="userCal" name="userCal" value={userCal} placeholder="Calories" onChange={(e) => setUserCal(e.target.value)}/>
+                  <input type="number" id="userProtein" name="userProtein" value={userProtein} placeholder="Protein (g)" onChange={(e) => setUserProtein(e.target.value)}/>  
+              </div>
+              <div className='box-child'>
+                  <input type="number" id="userCarb" name="userCarb" value={userCarb} placeholder="Carbohydrates (g)" onChange={(e) => setUserCarb(e.target.value)}/>
+                  <input type="number" id="userFat" name="userFat" value={userFat} placeholder="Fat (g)" onChange={(e) => setUserFat(e.target.value)}/>  
+              </div> 
+            </div>
+            <div className='button-group'>
+              <div className='button'>
+                  <input onClick={handleEnter} type="button" value="Enter"/>
+              </div>
+              <div className='button'>
+                  <input type="button" value="Save"/>
+                  <input type="button" value="Load"/>
+              </div>
+              <div className='button'>
+                  <input onClick={handleLeave} type="button" value="Back"/>
+              </div>
+            </div> 
+          </form>
+        </div>
+      </body>
+    </html>          
+  );
+}
   
   export default TrackerPage;

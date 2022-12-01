@@ -162,13 +162,19 @@ function TrackerPage() {
             <div>Manual input</div>
             <div className='box'>
               <div className='box-child'>
-                  <input type="number" id="userCal" name="userCal" value={userCal} placeholder="Calories" onChange={(e) => setUserCal(e.target.value)}/>
-                  <input type="number" id="userProtein" name="userProtein" value={userProtein} placeholder="Protein (g)" onChange={(e) => setUserProtein(e.target.value)}/>  
+                  <input type="number" id="userCal" style={{color: "#dc143c", fontWeight: "bold" }} name="userCal" value={userCal} placeholder="Calories" onChange={(e) => setUserCal(e.target.value)}/>
+                  <input type="number" id="userProtein" style={{color: "#00695c" , fontWeight: "bold" }} name="userProtein" value={userProtein} placeholder="Protein (g)" onChange={(e) => setUserProtein(e.target.value)}/>  
               </div>
               <div className='box-child'>
-                  <input type="number" id="userCarb" name="userCarb" value={userCarb} placeholder="Carbohydrates (g)" onChange={(e) => setUserCarb(e.target.value)}/>
-                  <input type="number" id="userFat" name="userFat" value={userFat} placeholder="Fat (g)" onChange={(e) => setUserFat(e.target.value)}/>  
+                  <input type="number" id="userCarb" style={{color: "#ef6c00", fontWeight: "bold" }} name="userCarb" value={userCarb} placeholder="Carbohydrates (g)" onChange={(e) => setUserCarb(e.target.value)}/>
+                  <input type="number" id="userFat" style={{color: "#6a1b9a", fontWeight: "bold" }} name="userFat" value={userFat} placeholder="Fat (g)" onChange={(e) => setUserFat(e.target.value)}/>  
               </div> 
+            </div>
+            <div style={{ paddingTop: 50 }}>
+              Percentages calculated based on FDA recommended daily values for adults.
+            </div>
+            <div style={{ }}>
+            (2000 calories, 50g protein, 275g carbohydrates, 78g fat)
             </div>
             <div className="progress-bar">
               {testData.map((item, idx) => (

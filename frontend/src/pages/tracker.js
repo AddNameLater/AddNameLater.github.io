@@ -20,6 +20,57 @@ function TrackerPage() {
     navigate('/dashboard');
   };
 
+  const ProgressBar = (props) => {
+    const { bgcolor, completed } = props;
+  
+    const containerStyles = {
+      height: 20,
+      width: '100%',
+      backgroundColor: "#e0e0de",
+      borderRadius: 50,
+      margin: 50
+    }
+  
+    const fillerStyles = {
+      height: '100%',
+      width: `${completed}%`,
+      backgroundColor: bgcolor,
+      borderRadius: 'inherit',
+      textAlign: 'right',
+      transition: 'width 1s ease-in-out'
+    }
+  
+    const labelStyles = {
+      padding: 5,
+      color: 'white',
+      fontWeight: 'bold'
+    }
+  
+    return (
+      <div style={containerStyles}>
+        <div style={fillerStyles}>
+          <span style={labelStyles}>{`${completed}%`}</span>
+        </div>
+      </div>
+    );
+  };
+
+  let calPercent = totalCal / 2000 * 100;
+  let proteinPercent = totalProtein / 50 * 100;
+  let carbPercent = totalCarb / 275 * 100;
+  let fatPercent = totalFat / 78 * 100;
+
+
+  const testData = [
+    { bgcolor: "#dc143c", completed: calPercent.toFixed(2) },
+    { bgcolor: "#00695c", completed: proteinPercent.toFixed(2) },
+    { bgcolor: "#ef6c00", completed: carbPercent.toFixed(2) },
+    { bgcolor: "#6a1b9a", completed: fatPercent.toFixed(2) },
+  ];
+
+  //const [completed, setCompleted] = useState(0);
+
+
   function handleEnter() {
     setTotalCal(totalCal + Number(userCal))
     setTotalProtein(totalProtein + Number(userProtein))
@@ -78,6 +129,7 @@ function TrackerPage() {
 
   useEffect(() => {
     getData();
+    //setInterval(() => setCompleted(Math.floor(Math.random() * 100) + 1), 2000);
   }, [])
 
   return (
@@ -117,6 +169,11 @@ function TrackerPage() {
                   <input type="number" id="userCarb" name="userCarb" value={userCarb} placeholder="Carbohydrates (g)" onChange={(e) => setUserCarb(e.target.value)}/>
                   <input type="number" id="userFat" name="userFat" value={userFat} placeholder="Fat (g)" onChange={(e) => setUserFat(e.target.value)}/>  
               </div> 
+            </div>
+            <div className="progress-bar">
+              {testData.map((item, idx) => (
+                <ProgressBar key={idx} bgcolor={item.bgcolor} completed={item.completed} />
+              ))}
             </div>
             <div className='button-group'>
               <div className='button'>

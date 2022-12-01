@@ -50,4 +50,8 @@
 .button {
     display: table-row;
 }
-  
+
+.progress-bar {
+    justify-content: center;
+    justify-self: center;
+}

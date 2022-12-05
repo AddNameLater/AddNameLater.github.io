@@ -40,7 +40,7 @@ def editProfile():
     if request.method == "GET":
         #For response body, call GET functions for user data inside json variable
         coll = db.Users
-        result = coll.find_one({"name": "User1"})
+        result = coll.find_one({"name": "User2"})
         qresult = list(result.values())
         response_body = {
             "userName" : str(qresult[1]),

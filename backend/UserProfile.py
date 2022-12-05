@@ -5,6 +5,10 @@ class UserProfile:
     totalProtein = 0
     totalCarbs = 0
     totalFat = 0
+    height = 0
+    age = 0
+    sex = ""
+    weight = 0
 
     def __init__(self, userName, password, firstName, lastName, accountNum):
         self.userName = userName
@@ -19,26 +23,32 @@ class UserProfile:
     def setHeight(self, height):
         self.height = height
 
-    def getHeight():
-        return height
+    def getHeight(self):
+        return self.height
     
     def setAge(self, age):
         self.age = age
 
-    def getAge():
-        return age
+    def getAge(self):
+        return self.age
 
-    def setSex(self, isMale):
+    def setSexMale(self, isMale):
         self.isMale = isMale
 
-    def getSex():
-        return isMale
+    def getSexMale(self):
+        return self.isMale
+
+    def setSexFemale(self, isFemale):
+        self.isFemale = isFemale
+
+    def getSexFemale(self):
+        return self.isFemale
 
     def setWeight(self, weight):
         self.weight = weight
 
-    def getWeight():
-        return weight
+    def getWeight(self):
+        return self.weight
 
     def setNotePadID(self, noteID):
         self.noteID = noteID
@@ -91,4 +101,22 @@ class UserProfile:
     def getTotalFat(self):
         self.totalFat = self.totalFat + self.getFat
         return self.totalFat
+
+    def toKilos(pounds):
+        kilos = pounds / 2.205
+        return kilos
+
+    def toCentimeters(inches):
+        cm = inches * 2.54
+        return cm
+
+    def totalCalNeedsMen(self):
+        self.BMR = 66 + (13.7 * self.toKilos(self.getWeight()) + (5 * self.toCentimeters(self.getHeight())) - (6.8 * self.getAge()))
+        self.BMR = self.BMR * 1.55
+        return self.BMR
+
+    def totalCalNeedsWomen(self):
+        self.BMR = 655 + (9.6 * self.toKilos(self.getWeight()) + (1.8 * self.toCentimeters(self.getHeight())) - (4.7 * self.getAge()))
+        self.BMR = self.BMR * 1.55
+        return self.BMR
 

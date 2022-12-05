@@ -7,7 +7,7 @@ class UserProfile:
     totalFat = 0
     height = 0
     age = 0
-    sex = ""
+    isMale = True
     weight = 0
 
     def __init__(self, userName, password, firstName, lastName, accountNum):
@@ -37,12 +37,6 @@ class UserProfile:
 
     def getSexMale(self):
         return self.isMale
-
-    def setSexFemale(self, isFemale):
-        self.isFemale = isFemale
-
-    def getSexFemale(self):
-        return self.isFemale
 
     def setWeight(self, weight):
         self.weight = weight
@@ -110,13 +104,30 @@ class UserProfile:
         cm = inches * 2.54
         return cm
 
-    def totalCalNeedsMen(self):
-        self.BMR = 66 + (13.7 * self.toKilos(self.getWeight()) + (5 * self.toCentimeters(self.getHeight())) - (6.8 * self.getAge()))
+    def totalCalNeeds(self):
+        if isMale:
+            self.BMR = 66 + (13.7 * self.toKilos(self.getWeight()) + (5 * self.toCentimeters(self.getHeight())) - (6.8 * self.getAge()))
+        else:
+            self.BMR = 655 + (9.6 * self.toKilos(self.getWeight()) + (1.8 * self.toCentimeters(self.getHeight())) - (4.7 * self.getAge()))
         self.BMR = self.BMR * 1.55
         return self.BMR
 
-    def totalCalNeedsWomen(self):
-        self.BMR = 655 + (9.6 * self.toKilos(self.getWeight()) + (1.8 * self.toCentimeters(self.getHeight())) - (4.7 * self.getAge()))
-        self.BMR = self.BMR * 1.55
-        return self.BMR
+    def totalCarbNeeds(self):
+        totalCarbs = self.BMR * 0.5
+        totalCarbs = totalCarbs/4
+        totalCarbs = int(totalCarbs)
+        return totalCarbs
+
+    def totalFatNeeds(self):
+        totalFat = self.BMR * 0.25
+        totalFat = totalFat/9
+        totalFat = int(totalFat)
+        return totalFat
+
+    def totalProteinNeeds(self):
+        totalProtein = self.BMR * 0.15
+        totalProtein = totalProtein/4
+        totalProtein = int(totalProtein)
+        return totalProtein
+
 

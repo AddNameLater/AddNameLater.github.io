@@ -66,7 +66,11 @@ def tracker():
             "calories" : 1200,
             "carbohydrates" : 69,
             "fat" : 21,
-            "protein" : 44
+            "protein" : 44,
+            "totalCals": 2200,
+            "totalCarbs": 275,
+            "totalFat": 61,
+            "totalProtein": 82
         }
         return response_body
     elif request.method == "POST":

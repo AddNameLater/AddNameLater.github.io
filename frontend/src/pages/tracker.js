@@ -13,6 +13,10 @@ function TrackerPage() {
   const [userProtein, setUserProtein] = React.useState('');
   const [userFat, setUserFat] = React.useState('');
   const [userCarb, setUserCarb] = React.useState('');
+  const [dailyCal, setDailyCal] = React.useState(0);
+  const [dailyCarb, setDailyCarb] = React.useState(0);
+  const [dailyFat, setDailyFat] = React.useState(0);
+  const [dailyProtein, setDailyProtein] = React.useState(0);
 
   const navigate = useNavigate();
 
@@ -55,10 +59,10 @@ function TrackerPage() {
     );
   };
 
-  let calPercent = totalCal / 2000 * 100;
-  let proteinPercent = totalProtein / 50 * 100;
-  let carbPercent = totalCarb / 275 * 100;
-  let fatPercent = totalFat / 78 * 100;
+  let calPercent = totalCal / dailyCal * 100;
+  let proteinPercent = totalProtein / dailyProtein * 100;
+  let carbPercent = totalCarb / dailyCarb * 100;
+  let fatPercent = totalFat / dailyFat * 100;
 
 
   const testData = [
@@ -118,6 +122,10 @@ function TrackerPage() {
       setTotalCarb(data.carbohydrates)
       setTotalFat(data.fat)
       setTotalProtein(data.protein)
+      setDailyCal(data.totalCals)
+      setDailyCarb(data.totalCarbs)
+      setDailyFat(data.totalFat)
+      setDailyProtein(data.totalProtein)
     }).catch((error) => {
       if (error.response) {
         console.log(error.response)

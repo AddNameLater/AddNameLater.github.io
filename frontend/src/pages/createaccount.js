@@ -30,12 +30,21 @@ function CreateAccountPage() {
   function handleSubmit() {
     //Add code here to save values in variables into database
     //preventDefault();
-    modifiedData.append('firstName', firstName)
-    modifiedData.append('lastName', lastName)
-    modifiedData.append('userName', userName)
-    modifiedData.append('password', password)
-    navigateToLogin();
-    postData();
+    if ((firstName && lastName && userName && password) == "")
+    {
+      alert("Values must be filled out");
+      return false;
+    }
+    else
+    {
+      modifiedData.append('firstName', firstName)
+      modifiedData.append('lastName', lastName)
+      modifiedData.append('userName', userName)
+      modifiedData.append('password', password)
+      navigateToLogin();
+      postData();
+    }
+    
   }
 
   const navigate = useNavigate();

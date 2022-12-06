@@ -66,15 +66,23 @@ function EditProfilePage() {
 
   function handleSubmit() {
     //Add code here to save values in variables into database
-    modifiedData.append('userName', userName)
-    modifiedData.append('password', password)
-    modifiedData.append('height', height)
-    modifiedData.append('age', age)
-    modifiedData.append('gender', gender)
-    modifiedData.append('weight', weight)
-    modifiedData.append('flag', flag)
-    navigateToDashboard();
-    postData();
+    if ((userName && password && height && age && weight) == "")
+    {
+      alert("Values must be filled out correctly");
+      return false;
+    }
+    else
+    {
+      modifiedData.append('userName', userName)
+      modifiedData.append('password', password)
+      modifiedData.append('height', height)
+      modifiedData.append('age', age)
+      modifiedData.append('gender', gender)
+      modifiedData.append('weight', weight)
+      modifiedData.append('flag', flag)
+      navigateToDashboard();
+      postData();
+    }    
   }
 
   return (

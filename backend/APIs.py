@@ -64,6 +64,7 @@ def editProfile():
 
     elif request.method == "POST":
         #To get specific variable from json file, call request.form.get(<variable name>)
+        global currentSession
         response_body = request.form
         #print(response_body)
         #print(request.form.get("password"))

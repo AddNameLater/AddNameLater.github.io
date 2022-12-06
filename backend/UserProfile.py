@@ -9,6 +9,8 @@ class UserProfile:
     age = 0
     isMale = True
     weight = 0
+    exerciseLevel = 1
+    BMR = 0
 
     def __init__(self, userName, password, firstName, lastName, accountNum):
         self.userName = userName
@@ -105,7 +107,7 @@ class UserProfile:
         return cm
 
     def totalCalNeeds(self):
-        if isMale:
+        if self.isMale:
             self.BMR = 66 + (13.7 * self.toKilos(self.getWeight()) + (5 * self.toCentimeters(self.getHeight())) - (6.8 * self.getAge()))
         else:
             self.BMR = 655 + (9.6 * self.toKilos(self.getWeight()) + (1.8 * self.toCentimeters(self.getHeight())) - (4.7 * self.getAge()))

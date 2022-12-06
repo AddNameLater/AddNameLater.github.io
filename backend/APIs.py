@@ -39,10 +39,14 @@ def dashboard():
 @app.route("/editprofile", methods=['GET', 'POST'])
 def editProfile():
     if request.method == "GET":
-        global currentSession
+        #get curr user session from db
+        coll = db.TrackerData
+        search = coll.find_one()
+        searchlist = list(search.values())
+        searchUser = searchlist[1] #current User
         #For response body, call GET functions for user data inside json variable
         coll = db.Users
-        result = coll.find_one({"name": currentSession})
+        result = coll.find_one({"name": searchUser})
         qresult = list(result.values())
         if len(qresult) > 5: #if the current user has profile data already in the db, preload fields
             response_body = {
@@ -64,10 +68,12 @@ def editProfile():
 
     elif request.method == "POST":
         #To get specific variable from json file, call request.form.get(<variable name>)
-        global currentSession
         response_body = request.form
-        #print(response_body)
-        #print(request.form.get("password"))
+        #get curr user session from db
+        coll = db.TrackerData
+        search = coll.find_one()
+        searchlist = list(search.values())
+        searchUser = searchlist[1] #current User
         #retrieve info from React fields
         username = request.form.get('userName')
         password = request.form.get('password')
@@ -77,13 +83,14 @@ def editProfile():
         weight = request.form.get('weight')
         flag = request.form.get('flag')
         #store info in current userProfile
-        currentSession.setHeight(height)
-        currentSession.setAge(age)
-        currentSession.setSexMale(gender)
-        currentSession.setWeight(weight)
+        #currentSession.setHeight(height)
+        #currentSession.setAge(age)
+        #currentSession.setSexMale(gender)
+        #currentSession.setWeight(weight)
         #update database with new info
         coll = db.Users
-        doc = [{
+        oldDoc = {"name": searchUser}
+        newDoc = [{
             "name": username,
             "password": password,
             "height": height,
@@ -91,28 +98,74 @@ def editProfile():
             "gender" : gender,
             "weight" : weight,
             "flag" : flag}]
-        result = coll.insert_one(doc)
+        coll.update_one(oldDoc, newDoc)
         return response_body
 
 @app.route("/tracker", methods=['GET', 'POST'])
 def tracker():
     if request.method == "GET":
-
+        #get curr user session from db
+        coll = db.TrackerData
+        search = coll.find_one()
+        searchlist = list(search.values())
+        searchUser = searchlist[1] #current User
+        coll = db.Users
+        result = coll.find_one({"name": searchUser})
+        qresult = list(result.values())
+        #load session user data for calculations
+        sessionUserProf = UserProfile(qresult[1], qresult[2], qresult[3], qresult[4], qresult[0])
+        sessionUserProf.setHeight(qresult[5])
+        sessionUserProf.setAge(qresult[6])
+        sessionUserProf.setSexMale(True)
+        sessionUserProf.setWeight(qresult[8])
+        sessionUserProf.setExerciseLevel(qresult[9])
+        #precalc totalcals to set bmr
+        precalcCals = sessionUserProf.totalCalNeeds()
+        #calc and return everything else
         response_body = {
-            "calories" : 1200,
-            "carbohydrates" : 69,
-            "fat" : 21,
-            "protein" : 44,
-            "totalCals": 2200,
-            "totalCarbs": 275,
-            "totalFat": 61,
-            "totalProtein": 82
+            "calories" : sessionUserProf.getCalories(),
+            "carbohydrates" : sessionUserProf.getCarbs(),
+            "fat" : sessionUserProf.getFat(),
+            "protein" : sessionUserProf.getprotein(),
+            "totalCals": precalcCals,
+            "totalCarbs": sessionUserProf.totalCarbNeeds(),
+            "totalFat": sessionUserProf.totalFatNeeds(),
+            "totalProtein": sessionUserProf.totalProteinNeeds()
         }
+        coll = db.MealData
+        oldUserj = {"name": searchUser}
+        newUserj = {"$set": {"name" : "Demo", 
+                            "totalCalories" : sessionUserProf.totalCalories,
+                            "totalProtein" : sessionUserProf.totalProtein,
+                            "totalCarbs" : sessionUserProf.totalCarbs,
+                            "totalFat" : sessionUserProf.totalFat,
+                            "isMale" : sessionUserProf.isMale,
+                            "BMR" : sessionUserProf.BMR}}
+        coll.update_one(oldUserj, newUserj)
         return response_body
+        
     elif request.method == "POST":
         response_body = request.form
-        print(response_body)
-        print(request.form.get("protein"))
+        #get curr user session from db
+        coll = db.TrackerData
+        search = coll.find_one()
+        searchlist = list(search.values())
+        searchUser = searchlist[1] #current User
+        #retrieve info from React fields
+        cals = request.form.get("calories")
+        protein = request.form.get("protein")
+        carbs = request.form.get("carbohyrates")
+        fat = request.form.get("fat")
+        #store in db
+        coll = db.MealData
+        oldUserj = {"name": searchUser}
+        newUserj = {"$set": {"name" : "Demo", 
+                            "totalCalories" : cals,
+                            "totalProtein" : protein,
+                            "totalCarbs" : carbs,
+                            "totalFat" : fat,
+                            }}
+        coll.update_one(oldUserj, newUserj)
         return response_body
 
 @app.route("/tracker/search", methods=['GET', 'POST'])
@@ -174,19 +227,20 @@ def login_post():
     if not user: #if username doesn't match db
         return redirect(url_for('.login'))
     uservals = list(user.values())
+    currentUserName = uservals[1]
     currentUserHash = uservals[2]
     if not check_password_hash(currentUserHash, password): #if pass is wrong
         return redirect(url_for('.login'))
-    #create session for user
-    global currentSession
-    qdata = coll.find_one({"name": username}, {'_id' : 1, "firstname" : 1, "lastname"  :1})
-    lqdata = list(qdata.values())
-    currID = lqdata[0]
-    currf = lqdata[1]
-    currl = lqdata[2]
-    currentSession = UserProfile(username,  password, currf, currl, currID)
+    #create session in db for user
+    coll = db.TrackerData
+    search = coll.find_one()
+    searchlist = list(search.values())
+    searchUser = searchlist[1]
+    oldUserj = {"currentUser": searchUser}
+    newUserj = {"$set": {"currentUser" : currentUserName}}
+    coll.update_one(oldUserj, newUserj)
     #passing both checks means user is verified
-    return redirect(url_for('.editProfile'))
+    return redirect(url_for('.dashboard'))
 
     
 

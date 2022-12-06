@@ -39,6 +39,7 @@ def dashboard():
 @app.route("/editprofile", methods=['GET', 'POST'])
 def editProfile():
     if request.method == "GET":
+        global currentSession
         #For response body, call GET functions for user data inside json variable
         coll = db.Users
         result = coll.find_one({"name": currentSession})
@@ -63,6 +64,7 @@ def editProfile():
 
     elif request.method == "POST":
         #To get specific variable from json file, call request.form.get(<variable name>)
+        global currentSession
         response_body = request.form
         #print(response_body)
         #print(request.form.get("password"))
@@ -74,6 +76,11 @@ def editProfile():
         gender = request.form.get('gender')
         weight = request.form.get('weight')
         flag = request.form.get('flag')
+        #store info in current userProfile
+        currentSession.setHeight(height)
+        currentSession.setAge(age)
+        currentSession.setSexMale(gender)
+        currentSession.setWeight(weight)
         #update database with new info
         coll = db.Users
         doc = [{

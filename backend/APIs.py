@@ -39,7 +39,7 @@ def createAccount():
     passhash = generate_password_hash(password) #generates a hash which is what the database will store
     new_user = coll.insert_one({"name": username, "password": passhash, "firstname": firstname, "lastname":  lastname}) #inserts new user into Users collection
     #redirect user to login page after successful registration
-    return redirect(url_for('.login_post'))
+    return "account creation success"
 
 @app.route('/dashboard')
 def dashboard():

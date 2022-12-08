@@ -13,14 +13,6 @@ uri = "mongodb+srv://Editor:Code9@diet-tracker.ncrahr5.mongodb.net/?retryWrites=
 client = MongoClient(uri)
 db = client.DietTracker
 
-@app.route('/', methods=['POST'])
-def login():
-    if request.method == "POST":
-        response_body = request.form
-        print(response_body)
-        print(request.form.get("password"))
-        return response_body
-
 @app.route('/createaccount', methods=['POST'])
 def createAccount():
     coll = db.Users
@@ -39,7 +31,7 @@ def createAccount():
     passhash = generate_password_hash(password) #generates a hash which is what the database will store
     new_user = coll.insert_one({"name": username, "password": passhash, "firstname": firstname, "lastname":  lastname}) #inserts new user into Users collection
     #redirect user to login page after successful registration
-    return "account creation success"
+    return "Success"
 
 @app.route('/dashboard')
 def dashboard():
@@ -226,7 +218,7 @@ def signup_post():
     #redirect user to login page after successful registration
     return redirect(url_for('.login_post'))
 
-@app.route('/login', methods=['POST'])
+@app.route('/', methods=['POST'])
 def login_post():
     db = client.DietTracker
     coll = db.Users
@@ -237,12 +229,12 @@ def login_post():
     #check enterted details
     user = coll.find_one({"name": username})
     if not user: #if username doesn't match db
-        return redirect(url_for('.login'))
+        return {"check": "Fail"}
     uservals = list(user.values())
     currentUserName = uservals[1]
     currentUserHash = uservals[2]
     if not check_password_hash(currentUserHash, password): #if pass is wrong
-        return redirect(url_for('.login'))
+        return {"check": "Fail"}
     #create session in db for user
     coll = db.TrackerData
     search = coll.find_one()
@@ -252,7 +244,7 @@ def login_post():
     newUserj = {"$set": {"currentUser" : currentUserName}}
     coll.update_one(oldUserj, newUserj)
     #passing both checks means user is verified
-    return redirect(url_for('.dashboard'))
+    return {"check": "Success"}
 
     
 

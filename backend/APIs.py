@@ -23,11 +23,23 @@ def login():
 
 @app.route('/createaccount', methods=['POST'])
 def createAccount():
-    if request.method == "POST":
-        response_body = request.form
-        print(response_body)
-        print(request.form.get("password"))
-        return response_body
+    coll = db.Users
+
+    firstname = request.form.get('firstName')
+    lastname = request.form.get('lastName')
+    username = request.form.get('userName')
+    password = request.form.get('password')
+
+    #will return if user under given username already exists
+    existCheck = coll.find_one({"name": username})
+    if existCheck:
+        return redirect(url_for('.signup_post')) #ideally would redirect to blank signup form
+    
+    #add new user data to database
+    passhash = generate_password_hash(password) #generates a hash which is what the database will store
+    new_user = coll.insert_one({"name": username, "password": passhash, "firstname": firstname, "lastname":  lastname}) #inserts new user into Users collection
+    #redirect user to login page after successful registration
+    return redirect(url_for('.login_post'))
 
 @app.route('/dashboard')
 def dashboard():

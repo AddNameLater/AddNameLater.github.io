@@ -59,10 +59,15 @@ function TrackerPage() {
     );
   };
 
-  let calPercent = totalCal / dailyCal * 100;
-  let proteinPercent = totalProtein / dailyProtein * 100;
-  let carbPercent = totalCarb / dailyCarb * 100;
-  let fatPercent = totalFat / dailyFat * 100;
+  let calPercent = totalCal / (Number(dailyCal)+1) * 100;
+  let proteinPercent = totalProtein / (Number(dailyProtein)+1) * 100;
+  let carbPercent = totalCarb / (Number(dailyCarb)+1) * 100;
+  let fatPercent = totalFat / (Number(dailyFat)+1) * 100;
+
+  /*let calPercent = (totalCal / 2200) * 100;
+  let proteinPercent = (totalProtein / 60) * 100;
+  let carbPercent = (totalCarb / 250) * 100;
+  let fatPercent = (totalFat / 78) * 100;*/
 
 
   const testData = [
@@ -84,6 +89,14 @@ function TrackerPage() {
     setUserCarb('')
     setUserFat('')
     setUserProtein('')
+    /*setDailyCal(2253)
+    setDailyCarb(275)
+    setDailyFat(78)
+    setDailyProtein(60)*/
+    setDailyCal(data.totalCals)
+    setDailyCarb(data.totalCarbs)
+    setDailyFat(data.totalFat)
+    setDailyProtein(data.totalProtein)
   }
 
   function handleLeave() {
@@ -122,10 +135,12 @@ function TrackerPage() {
       setTotalCarb(data.carbohydrates)
       setTotalFat(data.fat)
       setTotalProtein(data.protein)
-      setDailyCal(data.totalCals)
-      setDailyCarb(data.totalCarbs)
-      setDailyFat(data.totalFat)
-      setDailyProtein(data.totalProtein)
+      
+      /*setTotalCal(0)
+      setTotalCarb(0)
+      setTotalFat(0)
+      setTotalProtein(0)*/
+      
     }).catch((error) => {
       if (error.response) {
         console.log(error.response)

@@ -1,5 +1,5 @@
 import json
-import UserProfile
+from UserProfile import UserProfile
 from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,6 +8,7 @@ from pymongo import MongoClient
 app = Flask(__name__)
 
 loginu = LoginManager(app)
+sessionPass = "defPass"
 
 uri = "mongodb+srv://Editor:Code9@diet-tracker.ncrahr5.mongodb.net/?retryWrites=true&w=majority"
 client = MongoClient(uri)
@@ -28,7 +29,7 @@ def createAccount():
         return redirect(url_for('.signup_post')) #ideally would redirect to blank signup form
     
     #add new user data to database
-    passhash = generate_password_hash(password) #generates a hash which is what the database will store
+    passhash = password #generates a hash which is what the database will store
     new_user = coll.insert_one({"name": username, "password": passhash, "firstname": firstname, "lastname":  lastname}) #inserts new user into Users collection
     #redirect user to login page after successful registration
     return "Success"
@@ -52,21 +53,29 @@ def editProfile():
         coll = db.Users
         result = coll.find_one({"name": searchUser})
         qresult = list(result.values())
+        global sessionPass
         if len(qresult) > 5: #if the current user has profile data already in the db, preload fields
             response_body = {
-                "userName" : str(qresult[1]),
-                "password" : str(qresult[2]),
-                "height" : int(qresult[5]),
-                "age" : int(qresult[6]),
-                "gender" : str(qresult[7]),
-                "weight" : int(qresult[8]),
-                "flag" : int(qresult[9])
+                'userName' : str(qresult[1]),
+                'password' : str(qresult[2]),
+                'height' : int(qresult[8]),
+                'age' : int(qresult[5]),
+                'gender' : str(qresult[7]),
+                'weight' : int(qresult[9]),
+                'flag' : int(qresult[6])
             }
+            print('userName', str(qresult[1]),
+                '\npassword', str(qresult[2]),
+                '\nheight', int(qresult[8]),
+                '\nage', int(qresult[5]),
+                '\ngender', str(qresult[7]),
+                '\nweight', int(qresult[9]),
+                '\nflag', int(qresult[6]))
             return response_body
         else: #otherwise leave certain fields blank
             response_body = {
                 "userName" : str(qresult[1]),
-                "password" : str(qresult[2])
+                "password" : sessionPass
             }
             return response_body
 
@@ -81,11 +90,11 @@ def editProfile():
         #retrieve info from React fields
         username = request.form.get('userName')
         password = request.form.get('password')
-        height = request.form.get('height')
         age = request.form.get('age')
-        gender = request.form.get('gender')
-        weight = request.form.get('weight')
         flag = request.form.get('flag')
+        gender = request.form.get('gender')
+        height = request.form.get('height')
+        weight = request.form.get('weight')
         #store info in current userProfile
         #currentSession.setHeight(height)
         #currentSession.setAge(age)
@@ -101,7 +110,8 @@ def editProfile():
             "age" : age,
             "gender" : gender,
             "weight" : weight,
-            "flag" : flag}}
+            "flag" : flag
+            }}
         coll.update_one(oldDoc, newDoc)
         return response_body
 
@@ -138,7 +148,7 @@ def tracker():
         }
         coll = db.MealData
         oldUserj = {"name": searchUser}
-        newUserj = {"$set": {"name" : "Demo", 
+        newUserj = {"$set": {"name" : searchUser, 
                             "totalCalories" : sessionUserProf.totalCalories,
                             "totalProtein" : sessionUserProf.totalProtein,
                             "totalCarbs" : sessionUserProf.totalCarbs,
@@ -213,7 +223,7 @@ def signup_post():
         return redirect(url_for('.signup_post')) #ideally would redirect to blank signup form
     
     #add new user data to database
-    passhash = generate_password_hash(password) #generates a hash which is what the database will store
+    passhash = password #generates a hash which is what the database will store
     new_user = coll.insert_one({"name": username, "password": passhash, "firstname": firstname, "lastname":  lastname}) #inserts new user into Users collection
     #redirect user to login page after successful registration
     return redirect(url_for('.login_post'))
@@ -233,7 +243,7 @@ def login_post():
     uservals = list(user.values())
     currentUserName = uservals[1]
     currentUserHash = uservals[2]
-    if not check_password_hash(currentUserHash, password): #if pass is wrong
+    if not (currentUserHash == password): #if pass is wrong
         return {"check": "Fail"}
     #create session in db for user
     coll = db.TrackerData
@@ -243,6 +253,14 @@ def login_post():
     oldUserj = {"currentUser": searchUser}
     newUserj = {"$set": {"currentUser" : currentUserName}}
     coll.update_one(oldUserj, newUserj)
+    #global sessionPass
+    #sessionPass = password
+    print("currentUserName:", currentUserName)
+    print("retrieved username:", username)
+    print("retrieved password:", password)
+    print("set session password:", sessionPass)
+    print(oldUserj)
+    print(newUserj)
     #passing both checks means user is verified
     return {"check": "Success"}
 

@@ -8,7 +8,6 @@ from pymongo import MongoClient
 app = Flask(__name__)
 
 loginu = LoginManager(app)
-sessionPass = "defPass"
 
 uri = "mongodb+srv://Editor:Code9@diet-tracker.ncrahr5.mongodb.net/?retryWrites=true&w=majority"
 client = MongoClient(uri)
@@ -53,7 +52,6 @@ def editProfile():
         coll = db.Users
         result = coll.find_one({"name": searchUser})
         qresult = list(result.values())
-        global sessionPass
         if len(qresult) > 5: #if the current user has profile data already in the db, preload fields
             response_body = {
                 'userName' : str(qresult[1]),
@@ -75,7 +73,7 @@ def editProfile():
         else: #otherwise leave certain fields blank
             response_body = {
                 "userName" : str(qresult[1]),
-                "password" : sessionPass
+                "password" : str(qresult[2])
             }
             return response_body
 
@@ -128,23 +126,19 @@ def tracker():
         qresult = list(result.values())
         #load session user data for calculations
         sessionUserProf = UserProfile(qresult[1], qresult[2], qresult[3], qresult[4], qresult[0])
-        sessionUserProf.setHeight(qresult[5])
-        sessionUserProf.setAge(qresult[6])
-        sessionUserProf.setSexMale(True)
-        sessionUserProf.setWeight(qresult[8])
-        sessionUserProf.setExerciseLevel(qresult[9])
+        sessionUserProf.setHeight(qresult[8])
+        sessionUserProf.setAge(qresult[5])
+        sessionUserProf.setSexMale(False)
+        sessionUserProf.setWeight(qresult[9])
+        sessionUserProf.setExerciseLevel(qresult[6])
         #precalc totalcals to set bmr
         precalcCals = sessionUserProf.totalCalNeeds()
         #calc and return everything else
         response_body = {
             "calories" : sessionUserProf.getCalories(),
+            "protein" : sessionUserProf.getProtein(),
             "carbohydrates" : sessionUserProf.getCarbs(),
-            "fat" : sessionUserProf.getFat(),
-            "protein" : sessionUserProf.getprotein(),
-            "totalCals": precalcCals,
-            "totalCarbs": sessionUserProf.totalCarbNeeds(),
-            "totalFat": sessionUserProf.totalFatNeeds(),
-            "totalProtein": sessionUserProf.totalProteinNeeds()
+            "fat" : sessionUserProf.getFat()
         }
         coll = db.MealData
         oldUserj = {"name": searchUser}
@@ -258,7 +252,6 @@ def login_post():
     print("currentUserName:", currentUserName)
     print("retrieved username:", username)
     print("retrieved password:", password)
-    print("set session password:", sessionPass)
     print(oldUserj)
     print(newUserj)
     #passing both checks means user is verified

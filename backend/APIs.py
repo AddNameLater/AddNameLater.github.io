@@ -102,14 +102,14 @@ def editProfile():
         #update database with new info
         coll = db.Users
         oldDoc = {"name": searchUser}
-        newDoc = [{
+        newDoc = { "$set": {
             "name": username,
             "password": password,
             "height": height,
             "age" : age,
             "gender" : gender,
             "weight" : weight,
-            "flag" : flag}]
+            "flag" : flag}}
         coll.update_one(oldDoc, newDoc)
         return response_body
 

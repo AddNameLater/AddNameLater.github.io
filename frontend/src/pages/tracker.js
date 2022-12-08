@@ -64,17 +64,11 @@ function TrackerPage() {
   let carbPercent = totalCarb / (Number(dailyCarb)+1) * 100;
   let fatPercent = totalFat / (Number(dailyFat)+1) * 100;
 
-  /*let calPercent = (totalCal / 2200) * 100;
-  let proteinPercent = (totalProtein / 60) * 100;
-  let carbPercent = (totalCarb / 250) * 100;
-  let fatPercent = (totalFat / 78) * 100;*/
-
-
   const testData = [
     { bgcolor: "#dc143c", completed: calPercent.toFixed(2) },
     { bgcolor: "#00695c", completed: proteinPercent.toFixed(2) },
     { bgcolor: "#ef6c00", completed: carbPercent.toFixed(2) },
-    { bgcolor: "#6a1b9a", completed: fatPercent.toFixed(2) },
+    { bgcolor: "#6a1b9a", completed: fatPercent.toFixed(2) }
   ];
 
   //const [completed, setCompleted] = useState(0);
@@ -85,18 +79,14 @@ function TrackerPage() {
     setTotalProtein(totalProtein + Number(userProtein))
     setTotalFat(totalFat + Number(userFat))
     setTotalCarb(totalCarb + Number(userCarb))
+    setDailyCal(2253)
+    setDailyCarb(275)
+    setDailyFat(78)
+    setDailyProtein(60)
     setUserCal('')
     setUserCarb('')
     setUserFat('')
     setUserProtein('')
-    /*setDailyCal(2253)
-    setDailyCarb(275)
-    setDailyFat(78)
-    setDailyProtein(60)*/
-    setDailyCal(data.totalCals)
-    setDailyCarb(data.totalCarbs)
-    setDailyFat(data.totalFat)
-    setDailyProtein(data.totalProtein)
   }
 
   function handleLeave() {
@@ -131,15 +121,19 @@ function TrackerPage() {
     })
     .then((response) => {
       const data = response.data
-      setTotalCal(data.calories)
+      /*setTotalCal(data.calories)
       setTotalCarb(data.carbohydrates)
       setTotalFat(data.fat)
       setTotalProtein(data.protein)
-      
-      /*setTotalCal(0)
+      setDailyCal(data.totalCals)
+      setDailyCarb(data.totalCarbs)
+      setDailyFat(data.totalFat)
+      setDailyProtein(data.totalProtein)
+      */
+      setTotalCal(0)
       setTotalCarb(0)
       setTotalFat(0)
-      setTotalProtein(0)*/
+      setTotalProtein(0)
       
     }).catch((error) => {
       if (error.response) {
@@ -194,10 +188,10 @@ function TrackerPage() {
               </div> 
             </div>
             <div style={{ paddingTop: 50 }}>
-              Percentages calculated based on FDA recommended daily values for adults.
+              Percentages Calculated Based on Harris-Benedict Formula.
             </div>
             <div style={{ }}>
-            (2000 calories, 50g protein, 275g carbohydrates, 78g fat)
+            (2253 Calories, 61g Protein, 276g Carbohydrates, 79g Fat)
             </div>
             <div className="progress-bar">
               {testData.map((item, idx) => (

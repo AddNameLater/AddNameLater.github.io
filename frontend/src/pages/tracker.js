@@ -83,6 +83,10 @@ function TrackerPage() {
     setDailyCarb(275)
     setDailyFat(78)
     setDailyProtein(60)
+    setUserCal('')
+    setUserCarb('')
+    setUserFat('')
+    setUserProtein('')
   }
 
   function handleLeave() {
